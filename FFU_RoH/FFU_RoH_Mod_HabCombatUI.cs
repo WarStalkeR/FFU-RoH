@@ -99,63 +99,34 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 	}
 	[MonoModReplace] public class FriendlyShipListItemController : CombatantListItemController {
 		public Image noseArmorImage;
-
 		public Image portArmorImage;
-
 		public Image starboardArmorImage;
-
 		public Image tailArmorImage;
-
 		public Image targetingImage;
-
 		public Image heatImage;
-
 		public Image AIControlIcon;
-
 		public Image DVStaticImage;
-
 		public Image warningIcon_None;
-
 		public Image warningIcon_Warn;
-
 		public Image warningIcon_Alert;
-
 		public TooltipTrigger warningNoneTooltip;
-
 		public TooltipTrigger warningWarnTooltip;
-
 		public TooltipTrigger warningAlertTooltip;
-
 		public TooltipTrigger targetingTooltip;
-
 		public TMP_Text deltaVValue;
-
 		public ListManagerBase maneuverList;
-
 		public const float ySize = 80f;
-
 		public Image batteryWarningIcon;
-
 		private IWeapon[] noseWeaponComponents;
-
 		private IWeapon[] hullWeaponComponents;
-
 		private bool alertWeaponNoAmmo;
-
 		private bool alertWeaponNoTarget;
-
 		private bool alertShipNoWeapons;
-
 		private bool alertShipNoThrust;
-
 		private bool alertShipDisengaging;
-
 		private Color32 batteryRed = new Color32(236, 36, 0, byte.MaxValue);
-
 		private Color32 batteryYellow = new Color32(236, 236, 0, byte.MaxValue);
-
 		private static WaitForSeconds delay1 = new WaitForSeconds(1f);
-
 		public override void Init(SpaceCombatCanvasController masterController, CombatantController combatantController, int position) {
 			base.Init(masterController, combatantController, position);
 			noseArmorImage.color = Color.clear;
@@ -225,7 +196,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 					break;
 			}
 		}
-
 		private void UpdateWeaponNoTargetAlert() {
 			alertWeaponNoTarget = false;
 			bool flag = shipState.combatPrimaryTarget == null;
@@ -258,7 +228,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			}
 			UpdateAlerts();
 		}
-
 		private void UpdateWeaponOperationalStatus() {
 			bool flag = false;
 			alertWeaponNoAmmo = false;
@@ -277,7 +246,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			}
 			UpdateAlerts();
 		}
-
 		private void UpdateAlerts() {
 			if (alertWeaponNoAmmo) {
 				warningIcon_None.enabled = true;
@@ -335,7 +303,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			}
 			targetingImage.enabled = true;
 		}
-
 		public void OnShipSystemDamaged(ShipSystemDamageChange e) {
 			if (!shipState.CanSetWaypoints()) {
 				alertShipNoThrust = true;
@@ -343,44 +310,34 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			UpdateWeaponOperationalStatus();
 			UpdateAlerts();
 		}
-
 		public void OnShipWeaponModeChanged(ShipWeaponModeChanged e) {
 			UpdateWeaponNoTargetAlert();
 		}
-
 		public void OnShipDisengageChange(ShipDisengageChange e) {
 		}
-
 		public void OnShipPrimaryTargetDestroyed(ShipPrimaryTargetDestroyed e) {
 			UpdateWeaponNoTargetAlert();
 		}
-
 		public void OnShipWeaponFired(ShipWeaponFired e) {
 			UpdateWeaponOperationalStatus();
 			UpdateAlerts();
 		}
-
 		public void OnClickListItem() {
 			AudioManager.PlayOneShot("event:/SFX/UI_SFX/trig_SFX_CombatFriendlyShipSelect");
 			GameControl.eventManager.TriggerEvent(new CombatTargetedableStateSelected(base.combatantController.GetCombatantState()), null);
 		}
-
 		public override void OnDoubleClick() {
 			spaceCombat.combatCamera.LookAtCombatant(base.combatantController);
 		}
-
 		private void OnHeatChange(ShipHeatChange e) {
 			SpaceCombatCanvasController.SetHeatIcon(shipState, heatImage);
 		}
-
 		public void OnAIControlChanged(ShipAIControlChange e) {
 			SetAIControl(e.AIInControl);
 		}
-
 		public void SetAIControl(bool AIControlled) {
 			AIControlIcon.enabled = AIControlled;
 		}
-
 		public void OnShipDeltaVChange(ShipDeltaVChange e) {
 			SetDeltaVValue();
 			if (!shipState.CanSetWaypoints() || shipState.currentDeltaV_kps <= 0f) {
@@ -388,7 +345,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			}
 			UpdateAlerts();
 		}
-
 		public void SetDeltaVValue() {
 			float num = shipState.AvailableDeltaVForCombat_kps();
 			string text = TIUtilities.FormatBigOrSmallNumber(num, 1, 1);
@@ -399,11 +355,9 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 				deltaVValue.SetText(TIUtilities.YellowLine(deltaVValue.text));
 			}
 		}
-
 		public void OnShipBatteryChange(ShipBatteryChargeChange e) {
 			SetBatteryStatus();
 		}
-
 		public void SetBatteryStatus() {
 			batteryWarningIcon.enabled = shipState.batteryChargeFraction <= 0.25f;
 			if (shipState.batteryChargeFraction <= 0.05f) {
@@ -412,7 +366,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 				batteryWarningIcon.color = batteryYellow;
 			}
 		}
-
 		private void OnShipCommandExecuted(ShipCommandExecuted e) {
 			if (e.command is TIShipManeuverCommandTemplate || e.command is RammingSpeedCommand) {
 				SpaceCombatCanvasController.UpdateManeuverList(shipState, base.combatantController.ref_shipController, maneuverList);
@@ -421,15 +374,12 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 				UpdateWeaponNoTargetAlert();
 			}
 		}
-
 		private void OnCombatManenuverCompleted(CombatManeuverComplete e) {
 			SpaceCombatCanvasController.UpdateManeuverList(shipState, base.combatantController.ref_shipController, maneuverList);
 		}
-
 		private void OnCollisionAvoidanceActivated(CombatCollisionAvoidanceStatusChange e) {
 			SpaceCombatCanvasController.UpdateManeuverList(shipState, base.combatantController.ref_shipController, maneuverList);
 		}
-
 		public override void OnArmorHit(ArmorFacing facing, float rawDamage, float absorbedDamage) {
 			if (base.gameObject.activeInHierarchy) {
 				base.OnArmorHit(facing, rawDamage, absorbedDamage);
@@ -461,13 +411,11 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 				}
 			}
 		}
-
 		private IEnumerator FlashArmorFacing(Image facing, Color color) {
 			facing.color = color;
 			yield return delay1;
 			facing.color = Color.clear;
 		}
-
 		private new void OnDisable() {
 			GameControl.eventManager.RemoveListener<ShipHeatChange>(OnHeatChange);
 			GameControl.eventManager.RemoveListener<ShipAIControlChange>(OnAIControlChanged);
@@ -484,7 +432,6 @@ namespace PavonisInteractive.TerraInvicta.SpaceCombat.UI {
 			GameControl.eventManager.RemoveListener<ShipPrimaryTargetDestroyed>(OnShipPrimaryTargetDestroyed);
 			base.OnDisable();
 		}
-
 		private new void OnDestroy() {
 			GameControl.eventManager.RemoveListener<ShipHeatChange>(OnHeatChange);
 			GameControl.eventManager.RemoveListener<ShipAIControlChange>(OnAIControlChanged);

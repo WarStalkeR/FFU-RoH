@@ -30,11 +30,20 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <LangVersion>9.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Publish|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Publish\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>9.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -76,6 +85,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.Entities, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TerraInvicta_Data\Managed\Unity.Entities.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\TerraInvicta_Data\Managed\Unity.TextMeshPro.dll</HintPath>
@@ -101,11 +114,26 @@
     <Compile Include="FFU_RoH_Mod_HabCombatUI.cs" />
     <Compile Include="FFU_RoH_Mod_HabWeapon.cs" />
     <Compile Include="FFU_RoH_Defs.cs" />
+    <Compile Include="FFU_RoH_Mod_Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo F | xcopy /F /Y "$(TargetPath)" "$(TargetDir)\Assembly-CSharp.RoH.mm.dll"
-echo F | xcopy /F /Y "$(TargetDir)\Assembly-CSharp.RoH.mm.dll" "$(SolutionDir)..\..\BepInEx\monomod\Assembly-CSharp.RoH.mm.dll"</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == Debug (
+	echo F | xcopy /F /Y "$(TargetPath)" "$(SolutionDir)..\..\BepInEx\monomod\Assembly-CSharp.RoH.mm.dll"
+	del "$(TargetPath)" /F
+) else if $(ConfigurationName) == Release (
+	echo F | xcopy /F /Y "$(TargetPath)" "$(SolutionDir)..\..\BepInEx\monomod\Assembly-CSharp.RoH.mm.dll"
+	del "$(TargetPath)" /F
+) else if $(ConfigurationName) == Publish (
+	echo F | xcopy /F /Y "$(TargetPath)" "$(SolutionDir)..\..\BepInEx\monomod\Assembly-CSharp.RoH.mm.dll"
+	echo F | xcopy /F /Y "$(TargetPath)" "$(SolutionDir)..\..\TerraInvicta_Data\Managed\Assembly-CSharp.RoH.mm.dll"
+	"$(SolutionDir)..\MonoMod\MonoMod.exe" "$(SolutionDir)..\..\TerraInvicta_Data\Managed\Assembly-CSharp.dll"
+	del "$(SolutionDir)..\..\TerraInvicta_Data\Managed\Assembly-CSharp.RoH.mm.dll" /F
+	del "$(SolutionDir)..\..\TerraInvicta_Data\Managed\MONOMODDED_Assembly-CSharp.pdb" /F
+	echo F | xcopy /F /Y "$(SolutionDir)..\..\TerraInvicta_Data\Managed\MONOMODDED_Assembly-CSharp.dll" "$(SolutionDir)..\..\TerraInvicta_Data\Managed\Assembly-CSharp-RoH.dll"
+	del "$(SolutionDir)..\..\TerraInvicta_Data\Managed\MONOMODDED_Assembly-CSharp.dll" /F
+	del "$(TargetPath)" /F
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
